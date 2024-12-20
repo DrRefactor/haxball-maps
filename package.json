@@ -6,9 +6,10 @@
     "server": "npx tsx ./headless/runServer.ts"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.23.0",
     "husky": "^9.1.6",
     "puppeteer": "^23.7.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.2"
   }
 }
