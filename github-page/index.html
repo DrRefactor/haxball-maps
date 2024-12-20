@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <button id="copyButton">Copy</button>
+    <details>
+      <summary>Source</summary>
+      <pre id="fileContent"></pre>
+    </details>
+
+    <script>
+      const copyButton = document.getElementById("copyButton");
+      const fileContentElement = document.getElementById("fileContent");
+      const tickElement = document.createElement("span");
+      tickElement.textContent = "✔";
+
+      function showSuccess() {
+        copyButton.appendChild(tickElement);
+        setTimeout(() => {
+          copyButton.removeChild(tickElement);
+        }, 1000);
+      }
+
+      const jsFilePath = "out.js";
+      fetch(jsFilePath)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch ${jsFilePath}: ${response.statusText}`
+            );
+          }
+          return response.text();
+        })
+        .then((fileContent) => {
+          fileContentElement.textContent = fileContent;
+
+          copyButton.addEventListener("click", () => {
+            navigator.clipboard
+              .writeText(fileContent)
+              .then(showSuccess)
+              .catch((err) => {
+                console.error("Failed to copy to clipboard:", err);
+              });
+          });
+        })
+        .catch((err) => {
+          console.error(`Error loading ${jsFilePath}:`, err);
+        });
+    </script>
+  </body>
+</html>
