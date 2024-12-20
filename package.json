@@ -1,7 +1,9 @@
 {
   "type": "module",
   "scripts": {
-    "build": "esbuild ./src/index.ts --bundle --outfile=dist/out.js",
+    "build:bot-for-gh-pages": "esbuild ./src/index.ts --bundle --outfile=github-page/build/out.js",
+    "build:github-pages": "vite build github-page && yarn build:bot-for-gh-pages",
+    "preview:github-pages": "yarn build:github-pages && vite preview github-page",
     "tsc": "tsc",
     "server": "npx tsx ./headless/runServer.ts"
   },
