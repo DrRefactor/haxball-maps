@@ -110,13 +110,20 @@
   };
 
   // src/teamBalance.ts
+  var balanceVals = {
+    [1 /* RED */]: 1,
+    [2 /* BLUE */]: -1
+  };
   var teamBalancePlugin = (room2) => {
-    let nextTeam = 1 /* RED */;
     return {
       onPlayerJoin: function(player) {
+        const balance = room2.getPlayerList().reduce(
+          (result, player2) => result + (balanceVals[player2.team] ?? 0),
+          0
+        );
+        const playerTeam = balance > 0 ? 2 /* BLUE */ : 1 /* RED */;
         room2.setPlayerAdmin(player.id, true);
-        room2.setPlayerTeam(player.id, nextTeam);
-        nextTeam = nextTeam === 1 /* RED */ ? 2 /* BLUE */ : 1 /* RED */;
+        room2.setPlayerTeam(player.id, playerTeam);
       }
     };
   };
