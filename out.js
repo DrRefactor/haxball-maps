@@ -5,7 +5,8 @@
     playerName: "",
     noPlayer: true,
     public: false,
-    maxPlayers: 12
+    maxPlayers: 12,
+    token: process.env.HEADLESS_TOKEN
   });
   var ballRadius = 10;
   var playerRadius = 15;
@@ -80,10 +81,12 @@
   room.onPlayerChat = function(player, message) {
     console.log(player, `message: "${message}"`);
     if (message.toLowerCase().startsWith("!reset")) {
-      room.setDiscProperties(0, {
-        x: 0,
-        y: 0
-      });
+      setTimeout(() => {
+        room.setDiscProperties(0, {
+          x: 0,
+          y: 0
+        });
+      }, 1e3);
     }
     if (message.toLowerCase().startsWith("!power")) {
       const [_, teamIdString, powerString] = message.split(",");
@@ -101,4 +104,5 @@
     console.log(player);
     _nextTeam = _nextTeam === TEAM.RED ? TEAM.BLUE : TEAM.RED;
   };
+  window.hbRoom = room;
 })();
