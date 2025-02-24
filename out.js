@@ -6,7 +6,7 @@
     noPlayer: true,
     public: false,
     maxPlayers: 12,
-    token: process.env.HEADLESS_TOKEN
+    token: process?.env?.HEADLESS_TOKEN
   });
   var ballRadius = 10;
   var playerRadius = 15;
