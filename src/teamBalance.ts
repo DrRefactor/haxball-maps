@@ -1,14 +1,23 @@
 import { TEAM } from "./constants";
 import { Plugin } from "./utils/plugin";
 
-export const teamBalancePlugin: Plugin = room => {
-  let nextTeam = TEAM.RED;
+const balanceVals = {
+  [TEAM.RED]: 1,
+  [TEAM.BLUE]: -1,
+};
 
+export const teamBalancePlugin: Plugin = room => {
   return {
     onPlayerJoin: function (player) {
+      const balance = room
+        .getPlayerList()
+        .reduce(
+          (result, player) => result + (balanceVals[player.team] ?? 0),
+          0
+        );
+      const playerTeam = balance > 0 ? TEAM.BLUE : TEAM.RED;
       room.setPlayerAdmin(player.id, true);
-      room.setPlayerTeam(player.id, nextTeam);
-      nextTeam = nextTeam === TEAM.RED ? TEAM.BLUE : TEAM.RED;
+      room.setPlayerTeam(player.id, playerTeam);
     },
   };
 };
