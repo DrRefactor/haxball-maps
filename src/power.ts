@@ -4,22 +4,23 @@ import { discsDistance } from "./utils/geometry";
 import { Plugin } from "./utils/plugin";
 
 const triggerDistance = ballRadius + playerRadius + 75;
-const triggerTouchTime = 80;
+const powerTouchTime = 80;
+const megaPowerTouchTime = 160;
+const powerAvatar = "P";
+const megaPowerAvatar = "P!";
 
 const powerShotRatio = {
   [TEAM.RED]: 1.8,
   [TEAM.BLUE]: 1.8,
 };
+const megaPowerMultiplier = 1.5;
 
 export const powerPlugin: Plugin = room => {
   let playerTouchTime: Record<PlayerId, number> = {};
 
   function saveTouchTime() {
     room.getPlayerList().forEach(player => {
-      const distanceToBall = discsDistance(
-        room.getPlayerDiscProperties(player.id),
-        room.getDiscProperties(0)
-      );
+      const distanceToBall = discsDistance(room.getPlayerDiscProperties(player.id), room.getDiscProperties(0));
       const touches = distanceToBall < triggerDistance;
       if (touches) {
         playerTouchTime[player.id] = playerTouchTime[player.id] || 0;
@@ -32,10 +33,12 @@ export const powerPlugin: Plugin = room => {
 
   function updateAvatars() {
     Object.entries(playerTouchTime).forEach(([playerId, playerTouchTime]) => {
-      if (playerTouchTime >= triggerTouchTime) {
-        room.setPlayerAvatar(+playerId, "P");
+      if (playerTouchTime >= megaPowerTouchTime) {
+        room.setPlayerAvatar(+playerId, megaPowerAvatar);
+      } else if (playerTouchTime >= powerTouchTime) {
+        room.setPlayerAvatar(+playerId, powerAvatar);
       } else if (playerTouchTime > 0) {
-        const a = Math.round((10 * playerTouchTime) / triggerTouchTime);
+        const a = Math.round((10 * playerTouchTime) / powerTouchTime);
         room.setPlayerAvatar(+playerId, "." + a);
       } else {
         room.setPlayerAvatar(+playerId, null);
@@ -50,12 +53,15 @@ export const powerPlugin: Plugin = room => {
 
   return {
     onPlayerBallKick: function (player) {
-      const powerActive = playerTouchTime[player.id] >= triggerTouchTime;
-      if (powerActive) {
-        const ps = powerShotRatio[player.team];
+      const powerMultiplier =
+        powerShotRatio[player.team] *
+        ((playerTouchTime[player.id] >= megaPowerTouchTime && megaPowerMultiplier) ||
+          (playerTouchTime[player.id] >= powerTouchTime && 1) ||
+          0);
+      if (powerMultiplier) {
         room.setDiscProperties(0, {
-          xspeed: ps * (room.getDiscProperties(0)?.xspeed ?? 0),
-          yspeed: ps * (room.getDiscProperties(0)?.yspeed ?? 0),
+          xspeed: powerMultiplier * (room.getDiscProperties(0)?.xspeed ?? 0),
+          yspeed: powerMultiplier * (room.getDiscProperties(0)?.yspeed ?? 0),
         });
         resetTouchTimes();
       }
@@ -79,15 +85,9 @@ export const powerPlugin: Plugin = room => {
         const team = Number.parseInt(teamIdString);
         if (!Number.isNaN(power) && !Number.isNaN(team)) {
           powerShotRatio[team] = power;
-          room.sendAnnouncement(
-            `Power of team ${team} set to ${power}`,
-            player.id
-          );
+          room.sendAnnouncement(`Power of team ${team} set to ${power}`, player.id);
         } else {
-          room.sendAnnouncement(
-            `Incorrect power settings, command syntax: !power,<team_id>,<power_value>`,
-            player.id
-          );
+          room.sendAnnouncement(`Incorrect power settings, command syntax: !power,<team_id>,<power_value>`, player.id);
         }
       }
     },
