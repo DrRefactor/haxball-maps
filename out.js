@@ -12,19 +12,20 @@
 
   // src/power.ts
   var triggerDistance = ballRadius + playerRadius + 75;
-  var triggerTouchTime = 80;
+  var powerTouchTime = 80;
+  var megaPowerTouchTime = 160;
+  var powerAvatar = "P";
+  var megaPowerAvatar = "P!";
   var powerShotRatio = {
     [1 /* RED */]: 1.8,
     [2 /* BLUE */]: 1.8
   };
+  var megaPowerMultiplier = 1.5;
   var powerPlugin = (room2) => {
     let playerTouchTime = {};
     function saveTouchTime() {
       room2.getPlayerList().forEach((player) => {
-        const distanceToBall = discsDistance(
-          room2.getPlayerDiscProperties(player.id),
-          room2.getDiscProperties(0)
-        );
+        const distanceToBall = discsDistance(room2.getPlayerDiscProperties(player.id), room2.getDiscProperties(0));
         const touches = distanceToBall < triggerDistance;
         if (touches) {
           playerTouchTime[player.id] = playerTouchTime[player.id] || 0;
@@ -36,10 +37,12 @@
     }
     function updateAvatars() {
       Object.entries(playerTouchTime).forEach(([playerId, playerTouchTime2]) => {
-        if (playerTouchTime2 >= triggerTouchTime) {
-          room2.setPlayerAvatar(+playerId, "P");
+        if (playerTouchTime2 >= megaPowerTouchTime) {
+          room2.setPlayerAvatar(+playerId, megaPowerAvatar);
+        } else if (playerTouchTime2 >= powerTouchTime) {
+          room2.setPlayerAvatar(+playerId, powerAvatar);
         } else if (playerTouchTime2 > 0) {
-          const a = Math.round(10 * playerTouchTime2 / triggerTouchTime);
+          const a = Math.round(10 * playerTouchTime2 / powerTouchTime);
           room2.setPlayerAvatar(+playerId, "." + a);
         } else {
           room2.setPlayerAvatar(+playerId, null);
@@ -52,12 +55,11 @@
     }
     return {
       onPlayerBallKick: function(player) {
-        const powerActive = playerTouchTime[player.id] >= triggerTouchTime;
-        if (powerActive) {
-          const ps = powerShotRatio[player.team];
+        const powerMultiplier = powerShotRatio[player.team] * (playerTouchTime[player.id] >= megaPowerTouchTime && megaPowerMultiplier || playerTouchTime[player.id] >= powerTouchTime && 1 || 0);
+        if (powerMultiplier) {
           room2.setDiscProperties(0, {
-            xspeed: ps * (room2.getDiscProperties(0)?.xspeed ?? 0),
-            yspeed: ps * (room2.getDiscProperties(0)?.yspeed ?? 0)
+            xspeed: powerMultiplier * (room2.getDiscProperties(0)?.xspeed ?? 0),
+            yspeed: powerMultiplier * (room2.getDiscProperties(0)?.yspeed ?? 0)
           });
           resetTouchTimes();
         }
@@ -78,15 +80,9 @@
           const team = Number.parseInt(teamIdString);
           if (!Number.isNaN(power) && !Number.isNaN(team)) {
             powerShotRatio[team] = power;
-            room2.sendAnnouncement(
-              `Power of team ${team} set to ${power}`,
-              player.id
-            );
+            room2.sendAnnouncement(`Power of team ${team} set to ${power}`, player.id);
           } else {
-            room2.sendAnnouncement(
-              `Incorrect power settings, command syntax: !power,<team_id>,<power_value>`,
-              player.id
-            );
+            room2.sendAnnouncement(`Incorrect power settings, command syntax: !power,<team_id>,<power_value>`, player.id);
           }
         }
       }
