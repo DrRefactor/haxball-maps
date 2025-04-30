@@ -1,0 +1,94 @@
+{
+
+	"name" : "Tennis FN",
+
+	"width" : 500,
+
+	"height" : 281,
+
+	"spawnDistance" : 700,
+
+	"bg" : { "type" : "grass", "width" : 350, "height" : 200, "kickOffRadius" : 0, "cornerRadius" : 0 },
+
+	"vertexes" : [
+		/* 0 */ { "bCoef" : 0.1, "x" : -160, "y" : 0, "color" : "ffffff", "trait" : "Line" },
+		/* 1 */ { "bCoef" : 0.1, "x" : 160, "y" : 0, "color" : "ffffff", "trait" : "Line" },
+		/* 2 */ { "bCoef" : 0.1, "x" : -160, "y" : -160, "trait" : "Line" },
+		/* 3 */ { "bCoef" : 0.1, "x" : -160, "y" : 160, "trait" : "Line" },
+		/* 4 */ { "bCoef" : 0.1, "x" : 160, "y" : -160, "trait" : "Line" },
+		/* 5 */ { "bCoef" : 0.1, "x" : 160, "y" : 160, "trait" : "Line" },
+		/* 6 */ { "bCoef" : 0.1, "x" : -349.99998474121094, "y" : -160, "trait" : "Line" },
+		/* 7 */ { "bCoef" : 0.1, "x" : 351.00001525878906, "y" : -160, "trait" : "Line" },
+		/* 8 */ { "bCoef" : 0.1, "x" : -349.99998474121094, "y" : 160, "trait" : "Line" },
+		/* 9 */ { "bCoef" : 0.1, "x" : 351.00001525878906, "y" : 160, "trait" : "Line" },
+		
+		/* 10 */ { "bCoef" : 0.1, "trait" : "barrier", "x" : 0, "y" : -200, "vis" : true, "color" : "ffffff" },
+		/* 11 */ { "bCoef" : 0.1, "trait" : "barrier", "x" : 0, "y" : 200, "vis" : true, "color" : "ffffff" },
+		
+		/* 12 */ { "bCoef" : 0.1, "cMask" : ["red","blue" ], "cGroup" : ["blueKO" ], "trait" : "kickOffBarrier", "x" : -160, "y" : -200, "vis" : true, "color" : "66ccff" },
+		/* 13 */ { "bCoef" : 0.1, "cMask" : ["red","blue" ], "cGroup" : ["redKO" ], "trait" : "kickOffBarrier", "x" : 160, "y" : -200, "vis" : true, "color" : "66ccff" },
+		/* 14 */ { "bCoef" : 0.1, "cMask" : ["red","blue" ], "cGroup" : ["blueKO" ], "trait" : "kickOffBarrier", "x" : -161, "y" : 200, "vis" : true, "curve" : 0, "color" : "66ccff" },
+		/* 15 */ { "bCoef" : 0.1, "cMask" : ["red","blue" ], "cGroup" : ["redKO" ], "trait" : "kickOffBarrier", "x" : 159, "y" : 200, "vis" : true, "curve" : 0, "color" : "66ccff" }
+
+	],
+
+	"segments" : [
+		{ "bCoef" : 0.1, "v0" : 0, "v1" : 1, "color" : "ffffff", "trait" : "Line", "curve" : 1.504356785302277 },
+		{ "color" : "ffffff", "bCoef" : 0.1, "v0" : 2, "v1" : 3, "trait" : "Line" },
+		{ "color" : "ffffff", "bCoef" : 0.1, "v0" : 4, "v1" : 5, "trait" : "Line" },
+		{ "color" : "ffffff", "bCoef" : 0.1, "v0" : 6, "v1" : 7, "trait" : "Line" },
+		{ "color" : "ffffff", "bCoef" : 0.1, "v0" : 8, "v1" : 9, "trait" : "Line" },
+		
+		{ "vis" : true, "color" : "ffffff", "bCoef" : 0.1, "trait" : "barrier", "v0" : 10, "v1" : 11 },
+		
+		{ "vis" : true, "color" : "66ccff", "bCoef" : 0.9, "cMask" : ["ball" ], "cGroup" : ["red","blue" ], "trait" : "Line", "v0" : 12, "v1" : 13 },
+		{ "vis" : true, "color" : "66ccff", "bCoef" : 0.9, "cMask" : ["ball" ], "cGroup" : ["red","blue" ], "trait" : "Line", "v0" : 14, "v1" : 15, "curve" : 0, "y" : 200 },
+		
+		{ "vis" : false, "color" : "fafafa", "bCoef" : 0.1, "v0" : 12, "v1" : 14, "curve" : -157.42200732493137, "cMask" : ["red","blue" ], "trait" : "kickOffBarrier", "cGroup" : ["blueKO" ] },
+		{ "vis" : false, "color" : "fafafa", "bCoef" : 0.1, "v0" : 13, "v1" : 15, "curve" : 146.60365544732895, "cMask" : ["red","blue" ], "trait" : "kickOffBarrier", "cGroup" : ["redKO" ] }
+
+	],
+
+	"goals" : [
+		{ "team" : "blue", "p0" : [358.8571434020996,-217.42857146263123 ], "p1" : [358.8571434020996,215.57142853736877 ] },
+		{ "team" : "red", "p0" : [-358.8571434020996,-217.42857146263123 ], "p1" : [-358.8571434020996,215.57142853736877 ] },
+		{ "team" : "red", "p0" : [-359,213 ], "p1" : [-114,204 ] },
+		{ "team" : "blue", "p0" : [359,214 ], "p1" : [118,204 ] },
+		{ "p0" : [358,-218 ], "p1" : [120,-205 ], "team" : "blue" },
+		{ "p0" : [-360,-217 ], "p1" : [-124,-204 ], "team" : "red" }
+
+	],
+
+	"discs" : [
+		{ "radius" : 5, "pos" : [-0.22222137451171875,-203.66666793823242 ], "color" : "fafafa", "bCoef" : 0.1, "cMask" : ["red","blue" ], "trait" : "goalPost" },
+		{ "radius" : 5, "pos" : [-0.22222137451171875,203.66666793823242 ], "color" : "fafafa", "bCoef" : 0.1, "cMask" : ["red","blue" ], "trait" : "goalPost" }
+
+	],
+
+	"planes" : [
+		{ "bCoef" : 0.1, "dist" : -469.0000305175781, "normal" : [-1,0 ] },
+		{ "bCoef" : 0.1, "dist" : -469.0000305175781, "normal" : [1,0 ] },
+		
+		{ "bCoef" : 0.1, "trait" : "Line", "dist" : -280, "normal" : [0,1 ] },
+		{ "bCoef" : 0.1, "trait" : "Line", "dist" : -280, "normal" : [0,-1 ] }
+
+	],
+
+	"traits" : {
+		"ballArea" : { "vis" : true, "bCoef" : 2, "cMask" : ["ball" ], "color" : [250,250,250 ] },
+		"barrier" : { "vis" : false, "bCoef" : 0, "cMask" : ["red","blue" ] },
+		"letters" : { "vis" : true, "bCoef" : 0, "cMask" : ["" ], "color" : [255,255,255 ] },
+		"goalPost" : { "radius" : 3, "invMass" : 0, "cMask" : ["red","blue" ] },
+		"goalNet" : { "vis" : true, "bCoef" : 0.1, "cMask" : ["" ] },
+		"kickOffBarrier" : { "vis" : false, "bCoef" : 0.1, "cGroup" : ["redKO","blueKO" ], "cMask" : ["red","blue" ] },
+		"Line" : { "vis" : true, "bCoef" : 0, "cMask" : ["" ], "color" : [250,250,250 ] }
+
+	},
+
+	"playerPhysics" : {
+		"acceleration" : 0.17,
+		"kickStrength" : 0.1,
+		"bCoef" : 3.48
+
+	}
+}
