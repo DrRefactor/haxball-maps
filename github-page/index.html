@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
-    <button id="copyButton">Copy</button>
+    <button id="copyButton">Copy & go</button>
     <details>
       <summary>Source</summary>
       <pre id="fileContent"></pre>
@@ -41,6 +41,9 @@
             navigator.clipboard
               .writeText(fileContent)
               .then(showSuccess)
+              .then(() => {
+                window.open("https://haxball.com/headless", "_blank").focus();
+              })
               .catch((err) => {
                 console.error("Failed to copy to clipboard:", err);
               });
