@@ -71,6 +71,7 @@ type Room = {
     byPlayer: Player | null
   ) => void;
   onGameTick?: () => void;
+  onRoomLink?: (url: string) => void;
 };
 
 export type PlayerId = number;
