@@ -3,6 +3,7 @@ import { powerPlugin } from "./power";
 import { resetPlugin } from "./reset";
 import { teamBalancePlugin } from "./teamBalance";
 import { applyPlugins } from "./utils/plugin";
+import { goalAnnouncerPlugin } from "./goal-announcer";
 import { serverAnnouncerPlugin } from "./serverAnnouncer";
 
 const room = HBInit({
@@ -19,6 +20,7 @@ applyPlugins(
   powerPlugin,
   resetPlugin,
   teamBalancePlugin,
+  goalAnnouncerPlugin,
   serverAnnouncerPlugin
 );
 
