@@ -138,6 +138,43 @@
     plugins.forEach((plugin) => applyPlugin(room2, plugin(room2)));
   }
 
+  // src/serverAnnouncer.ts
+  var $DISCORD_WEBHOOK_URL = "";
+  var botName = "Haxball Announcer";
+  var autoAnnounce = true;
+  var serverAnnouncerPlugin = (room2) => {
+    let serverUrl = "";
+    const announce = () => {
+      if (!serverUrl) {
+        console.error("announce: server url is empty!");
+        return;
+      }
+      fetch($DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+          username: botName,
+          content: serverUrl
+        })
+      });
+    };
+    return {
+      onRoomLink: (url) => {
+        serverUrl = url;
+        if (autoAnnounce) {
+          announce();
+        }
+      },
+      onPlayerChat: (_, message) => {
+        if (message.startsWith("!d")) {
+          announce();
+        }
+      }
+    };
+  };
+
   // src/index.ts
   var room = HBInit({
     roomName: "Jeze",
@@ -147,6 +184,12 @@
     maxPlayers: 12,
     token: window.process?.env?.HEADLESS_TOKEN
   });
-  applyPlugins(room, powerPlugin, resetPlugin, teamBalancePlugin);
+  applyPlugins(
+    room,
+    powerPlugin,
+    resetPlugin,
+    teamBalancePlugin,
+    serverAnnouncerPlugin
+  );
   window.hbRoom = room;
 })();
