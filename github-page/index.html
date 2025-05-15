@@ -3,6 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Haxball Maps</title>
+    <style>
+      /* General Reset */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* Center Content */
+      body {
+        display: flex;
+        margin-top: 20px;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      /* Button Styling */
+      #copyButton {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #copyButton:hover {
+        background-color: #0056b3;
+      }
+
+      #copyButton span {
+        margin-left: 10px;
+        color: #28a745;
+        font-weight: bold;
+      }
+
+      /* Input Section */
+      section {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      input {
+        width: 300px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      /* Details Section */
+      details {
+        margin-top: 20px;
+        width: 80%;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
+
+      summary {
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 14px;
+      }
+    </style>
   </head>
   <body>
     <button id="copyButton">Copy & go</button>
