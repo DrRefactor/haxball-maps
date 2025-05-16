@@ -138,6 +138,26 @@
     plugins.forEach((plugin) => applyPlugin(room2, plugin(room2)));
   }
 
+  // src/goal-announcer.ts
+  var goalAnnouncerPlugin = (room2) => {
+    let kickedBy = null;
+    return {
+      onPlayerBallKick: function(player) {
+        kickedBy = player;
+      },
+      onTeamGoal(team) {
+        if (!kickedBy) {
+          return;
+        }
+        if (kickedBy.team !== team) {
+          room2.sendAnnouncement(`${kickedBy.name} scores an own goal`, void 0, 16711680, "bold", 2);
+        } else {
+          room2.sendAnnouncement(`${kickedBy.name} scores`, void 0, 65280, "bold", 2);
+        }
+      }
+    };
+  };
+
   // src/serverAnnouncer.ts
   var $DISCORD_WEBHOOK_URL = "";
   var botName = "Haxball Announcer";
@@ -189,6 +209,7 @@
     powerPlugin,
     resetPlugin,
     teamBalancePlugin,
+    goalAnnouncerPlugin,
     serverAnnouncerPlugin
   );
   window.hbRoom = room;
