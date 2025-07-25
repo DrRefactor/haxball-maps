@@ -50,6 +50,10 @@ type Room = {
     discId: number,
     properties: Partial<DiscProperties>
   ) => void;
+  setPlayerDiscProperties: (
+    playerID: number,
+    properties: Partial<DiscProperties>
+  ) => void;
   startRecording: () => void;
   stopRecording: () => Uint8Array;
   onPlayerJoin?: (player: Player) => void;
