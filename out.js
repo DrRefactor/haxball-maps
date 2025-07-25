@@ -164,11 +164,16 @@
   var autoAnnounce = true;
   var serverAnnouncerPlugin = (room2) => {
     let serverUrl = "";
-    const announce = () => {
+    let shouldAnnounce = true;
+    const announce = (shouldFetch = shouldAnnounce) => {
       if (!serverUrl) {
         console.error("announce: server url is empty!");
         return;
       }
+      if (!shouldFetch) {
+        return;
+      }
+      shouldAnnounce = false;
       fetch($DISCORD_WEBHOOK_URL, {
         method: "POST",
         headers: {
@@ -189,7 +194,7 @@
       },
       onPlayerChat: (_, message) => {
         if (message.startsWith("!d")) {
-          announce();
+          announce(true);
         }
       }
     };
