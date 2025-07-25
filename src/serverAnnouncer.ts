@@ -6,11 +6,16 @@ const autoAnnounce = true; // change to false if you want to stop spamming
 
 export const serverAnnouncerPlugin: Plugin = (room) => {
   let serverUrl = "";
-  const announce = () => {
+  let shouldAnnounce = true;
+  const announce = (shouldFetch = shouldAnnounce) => {
     if (!serverUrl) {
       console.error("announce: server url is empty!");
       return;
     }
+    if (!shouldFetch) {
+      return;
+    }
+    shouldAnnounce = false;
     fetch($DISCORD_WEBHOOK_URL, {
       method: "POST",
       headers: {
@@ -31,7 +36,7 @@ export const serverAnnouncerPlugin: Plugin = (room) => {
     },
     onPlayerChat: (_, message) => {
       if (message.startsWith("!d")) {
-        announce();
+        announce(true);
       }
     },
   };
