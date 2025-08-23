@@ -91,15 +91,27 @@
 
   // src/reset.ts
   var resetPlugin = (room2) => {
+    let resetTimeout = null;
     return {
       onPlayerChat: function(player, message) {
-        if (message.toLowerCase().startsWith("!reset")) {
-          setTimeout(() => {
+        const msg = message.trim().toLowerCase();
+        if (msg.startsWith("!reset")) {
+          if (resetTimeout) {
+            clearTimeout(resetTimeout);
+            resetTimeout = null;
+          }
+          resetTimeout = setTimeout(() => {
             room2.setDiscProperties(0, {
               x: 0,
               y: 0
             });
           }, 1e3);
+        }
+        if (msg.startsWith("!stop_reset")) {
+          if (resetTimeout) {
+            clearTimeout(resetTimeout);
+            resetTimeout = null;
+          }
         }
       }
     };
