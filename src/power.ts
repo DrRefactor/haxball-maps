@@ -1,5 +1,5 @@
 import { ballRadius, playerRadius, TEAM } from "./constants";
-import { PlayerId } from "./types/haxball-api.d";
+import { DiscProperties, PlayerId } from "./types/haxball-api.d";
 import { discsDistance } from "./utils/geometry";
 import { Plugin } from "./utils/plugin";
 
@@ -51,6 +51,18 @@ export const powerPlugin: Plugin = room => {
     updateAvatars();
   }
 
+  let originalProperties = {
+    invMass: 1,
+    color: 0xFFFFFF,
+    bCoeff: 1,
+    ygravity: 0,
+    radius: 10
+  };
+  let restoreTimerId: number = 0;
+  let spinTimerId: number = 0;
+  const spinDuration = 25;
+  const spinGravity = 0.3;
+
   return {
     onPlayerBallKick: function (player) {
       const powerMultiplier =
@@ -59,16 +71,43 @@ export const powerPlugin: Plugin = room => {
           (playerTouchTime[player.id] >= powerTouchTime && 1) ||
           0);
       if (powerMultiplier) {
+        const spinSign = room.getDiscProperties(0)?.yspeed > 0 ? -1 : 1;
         room.setDiscProperties(0, {
           xspeed: powerMultiplier * (room.getDiscProperties(0)?.xspeed ?? 0),
           yspeed: powerMultiplier * (room.getDiscProperties(0)?.yspeed ?? 0),
+          color: player.team === TEAM.RED ? 0xAA0000 : 0x0000AA,
+          invMass: originalProperties.invMass / 2,
+          ygravity: originalProperties.ygravity + spinGravity * spinSign,
+          radius: 12
         });
+        window.clearTimeout(spinTimerId);
+        spinTimerId = window.setTimeout(() => {
+          room.setDiscProperties(0, {
+            ygravity: originalProperties.ygravity,
+            radius: originalProperties.radius,
+            color: player.team === TEAM.RED ? 0xFF0000 : 0x0000FF,
+          });
+        }, spinDuration);
+        window.clearTimeout(restoreTimerId);
+        restoreTimerId = window.setTimeout(() => {
+          room.setDiscProperties(0, {
+            color: originalProperties.color,
+            bCoeff: originalProperties.bCoeff,
+            invMass: originalProperties.invMass,
+          });
+        }, 2000);
         resetTouchTimes();
       }
     },
 
+    onGameStart: function () {
+      originalProperties = room.getDiscProperties(0);
+    },
+
     onGameStop: function (byPlayer) {
       playerTouchTime = {};
+      window.clearTimeout(restoreTimerId);
+      window.clearTimeout(spinTimerId);
     },
 
     onGameTick: function () {
