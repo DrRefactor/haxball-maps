@@ -5,6 +5,7 @@ import { teamBalancePlugin } from "./teamBalance";
 import { applyPlugins } from "./utils/plugin";
 import { goalAnnouncerPlugin } from "./goal-announcer";
 import { serverAnnouncerPlugin } from "./serverAnnouncer";
+import { pvpShootPlugin } from "./pvp-shoot";
 
 const room = HBInit({
   roomName: "Jeze",
@@ -21,7 +22,8 @@ applyPlugins(
   resetPlugin,
   teamBalancePlugin,
   goalAnnouncerPlugin,
-  serverAnnouncerPlugin
+  serverAnnouncerPlugin,
+  pvpShootPlugin
 );
 
 // expose hbRomm globally to allow control from headless server console
