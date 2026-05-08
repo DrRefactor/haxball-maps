@@ -49,7 +49,7 @@ export const pvpShootPlugin: Plugin = (room) => {
           .getPlayerList()
           .filter((p) => p.team !== player.team);
         if (opponents.length > 0) {
-          const [, closestOpponent] = opponents.reduce(
+          const [closestDistance, closestOpponent] = opponents.reduce(
             ([closestDistance, closestOpponent], opponent) => {
               const opponentPosition = opponent.position;
               if (!opponentPosition) {
@@ -70,17 +70,28 @@ export const pvpShootPlugin: Plugin = (room) => {
           if (!closestOpponentPosition) {
             return;
           }
+          const closestOpponentDiscProperties = room.getPlayerDiscProperties(closestOpponent.id);
+          if (!closestOpponentDiscProperties) {
+            return;
+          }
+          const bulletSpeed = 10;
+          const timeToHit = closestDistance / bulletSpeed;
+          const predictedOpponentPosition = {
+            x: closestOpponentPosition.x + timeToHit * closestOpponentDiscProperties.xspeed,
+            y: closestOpponentPosition.y + timeToHit * closestOpponentDiscProperties.yspeed,
+          };
           const angle = Math.atan2(
-            closestOpponentPosition.y - playerPosition.y,
-            closestOpponentPosition.x - playerPosition.x,
+            predictedOpponentPosition.y - playerPosition.y,
+            predictedOpponentPosition.x - playerPosition.x,
           );
           const bulletId = message.split(" ")[1] || 1;
           room.setDiscProperties(+bulletId, {
             x: playerPosition.x,
             y: playerPosition.y,
-            xspeed: Math.cos(angle) * 10,
-            yspeed: Math.sin(angle) * 10,
+            xspeed: Math.cos(angle) * bulletSpeed,
+            yspeed: Math.sin(angle) * bulletSpeed,
             color: player.team === 1 ? 0xff0000 : 0x0000ff,
+            damping: 1,
           });
         }
       }
