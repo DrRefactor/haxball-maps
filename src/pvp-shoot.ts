@@ -49,7 +49,7 @@ export const pvpShootPlugin: Plugin = (room) => {
           .getPlayerList()
           .filter((p) => p.team !== player.team);
         if (opponents.length > 0) {
-          const [, closestOpponent] = opponents.slice(1).reduce(
+          const [, closestOpponent] = opponents.reduce(
             ([closestDistance, closestOpponent], opponent) => {
               const opponentPosition = opponent.position;
               if (!opponentPosition) {
