@@ -1,5 +1,5 @@
 import { ballRadius, playerRadius, TEAM } from "./constants";
-import { DiscProperties, PlayerId } from "./types/haxball-api.d";
+import { PlayerId } from "./types/haxball-api.d";
 import { discsDistance } from "./utils/geometry";
 import { Plugin } from "./utils/plugin";
 
@@ -20,7 +20,15 @@ export const powerPlugin: Plugin = room => {
 
   function saveTouchTime() {
     room.getPlayerList().forEach(player => {
-      const distanceToBall = discsDistance(room.getPlayerDiscProperties(player.id), room.getDiscProperties(0));
+      const playerDiscProperties = room.getPlayerDiscProperties(player.id);
+      if (!playerDiscProperties) {
+        return;
+      }
+      const ballDiscProperties = room.getDiscProperties(0);
+      if (!ballDiscProperties) {
+        return;
+      }
+      const distanceToBall = discsDistance(playerDiscProperties, ballDiscProperties);
       const touches = distanceToBall < triggerDistance;
       if (touches) {
         playerTouchTime[player.id] = playerTouchTime[player.id] || 0;
@@ -71,10 +79,14 @@ export const powerPlugin: Plugin = room => {
           (playerTouchTime[player.id] >= powerTouchTime && 1) ||
           0);
       if (powerMultiplier) {
-        const spinSign = room.getDiscProperties(0)?.yspeed > 0 ? -1 : 1;
+        const ballDiscProperties = room.getDiscProperties(0);
+        if (!ballDiscProperties) {
+          return;
+        }
+        const spinSign = ballDiscProperties.yspeed > 0 ? -1 : 1;
         room.setDiscProperties(0, {
-          xspeed: powerMultiplier * (room.getDiscProperties(0)?.xspeed ?? 0),
-          yspeed: powerMultiplier * (room.getDiscProperties(0)?.yspeed ?? 0),
+          xspeed: powerMultiplier * (ballDiscProperties.xspeed ?? 0),
+          yspeed: powerMultiplier * (ballDiscProperties.yspeed ?? 0),
           color: player.team === TEAM.RED ? 0xAA0000 : 0x0000AA,
           invMass: originalProperties.invMass / 2,
           ygravity: originalProperties.ygravity + spinGravity * spinSign,
@@ -101,7 +113,7 @@ export const powerPlugin: Plugin = room => {
     },
 
     onGameStart: function () {
-      originalProperties = room.getDiscProperties(0);
+      originalProperties = room.getDiscProperties(0) || originalProperties;
     },
 
     onGameStop: function (byPlayer) {

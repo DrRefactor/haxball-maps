@@ -3,7 +3,8 @@
     "noEmit": true,
     "allowJs": false,
     "target": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "strictNullChecks": true
   },
   "include": ["src/**/*"]
 }

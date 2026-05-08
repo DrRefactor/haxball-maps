@@ -30,6 +30,10 @@ export const pvpShootPlugin: Plugin = (room) => {
     },
     onPlayerChat: (player, message) => {
       if (message.startsWith("!shoot")) {
+        const playerPosition = player.position;
+        if (!playerPosition) {
+          return;
+        }
         if (
           playerCooldowns[player.id] &&
           playerCooldowns[player.id] > Date.now()
@@ -47,9 +51,13 @@ export const pvpShootPlugin: Plugin = (room) => {
         if (opponents.length > 0) {
           const [, closestOpponent] = opponents.slice(1).reduce(
             ([closestDistance, closestOpponent], opponent) => {
+              const opponentPosition = opponent.position;
+              if (!opponentPosition) {
+                return [closestDistance, closestOpponent];
+              }
               const distance = discsDistance(
-                player.position,
-                opponent.position,
+                playerPosition,
+                opponentPosition,
               );
               return distance < closestDistance
                 ? [distance, opponent]
@@ -58,14 +66,18 @@ export const pvpShootPlugin: Plugin = (room) => {
             [Infinity, opponents[0]],
           );
 
+          const closestOpponentPosition = closestOpponent.position;
+          if (!closestOpponentPosition) {
+            return;
+          }
           const angle = Math.atan2(
-            closestOpponent.position.y - player.position.y,
-            closestOpponent.position.x - player.position.x,
+            closestOpponentPosition.y - playerPosition.y,
+            closestOpponentPosition.x - playerPosition.x,
           );
           const bulletId = message.split(" ")[1] || 1;
           room.setDiscProperties(+bulletId, {
-            x: player.position.x,
-            y: player.position.y,
+            x: playerPosition.x,
+            y: playerPosition.y,
             xspeed: Math.cos(angle) * 10,
             yspeed: Math.sin(angle) * 10,
             color: player.team === 1 ? 0xff0000 : 0x0000ff,
